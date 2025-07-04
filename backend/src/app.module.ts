@@ -5,9 +5,11 @@ import { AppService } from './app.service';
 import { UsersModule } from 'src/users/users.module';
 import { ConfigService } from 'src/config/config.service';
 import { ConfigModule } from 'src/config/config.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     ConfigModule,
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],

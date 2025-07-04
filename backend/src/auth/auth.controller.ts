@@ -1,18 +1,31 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { LoginDto } from './dtos/login.dto';
-import { TokenResponseDto } from './dtos/token-response.dto';
-import { AuthService } from 'src/auth/services/auth.service';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
-@ApiTags('auth')
+import { AuthService } from './providers/auth.service';
+import { Auth } from './decorators/auth.decorator';
+import { AuthType } from './enums/auth-type.enum';
+import { RefreshTokenDto } from './dtos/refresh-token.dto';
+import { SignInDto } from 'src/auth/dtos/sign-in.dto';
+
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    /*
+     * Injecting Auth Service
+     */
+    private readonly authService: AuthService,
+  ) {}
 
-  @Post('login')
-  @ApiOperation({ summary: 'Login with email and password' })
-  @ApiResponse({ status: 201, type: TokenResponseDto })
-  async login(@Body() loginDto: LoginDto) {
-    return await this.authService.login(loginDto.email, loginDto.password);
+  @Post('sign-in')
+  @HttpCode(HttpStatus.OK)
+  @Auth(AuthType.None)
+  public signIn(@Body() signInDto: SignInDto) {
+    return this.authService.signIn(signInDto);
+  }
+
+  @Auth(AuthType.None)
+  @HttpCode(HttpStatus.OK) // changed since the default is 201
+  @Post('refresh-tokens')
+  refreshTokens(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshTokens(refreshTokenDto);
   }
 }

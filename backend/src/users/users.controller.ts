@@ -2,7 +2,7 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { User } from './user.entity';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
-import { UsersService } from 'src/users/services/users.service';
+import { UsersService } from 'src/users/providers/users.service';
 import {
   ApiBody,
   ApiConflictResponse,

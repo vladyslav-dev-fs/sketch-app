@@ -14,4 +14,11 @@ export class ConfigService {
       name: this.config.get<string>('DB_NAME'),
     };
   }
+
+  get jwt() {
+    return {
+      secret: this.config.get<string>('JWT_SECRET'),
+      refreshSecret: this.config.get<string>('JWT_REFRESH_SECRET'),
+    };
+  }
 }

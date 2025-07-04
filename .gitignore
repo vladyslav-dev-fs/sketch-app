@@ -1,0 +1,16 @@
+# Node.js
+node_modules/
+dist/
+*.log
+.env
+
+# IDEs
+.vscode/
+.DS_Store
+
+# Next.js
+frontend/.next/
+
+# NestJS
+backend/dist/
+backend/.env

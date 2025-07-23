@@ -18,7 +18,7 @@ export default function LoginPage() {
         });
 
         if (res.ok) {
-          router.replace("/");
+          window.location.replace("/");
         } else {
           setIsCheckingAuth(false); // <--
         }
@@ -42,7 +42,7 @@ export default function LoginPage() {
     });
 
     if (res.ok) {
-      router.replace("/");
+      window.location.replace("/");
     } else {
       setError("Invalid credentials");
     }

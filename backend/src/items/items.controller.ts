@@ -1,5 +1,5 @@
 // src/items/item.controller.ts
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { ItemService } from './providers/item.service';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { Item } from './item.entity';
@@ -11,6 +11,11 @@ import { User } from 'src/users/user.entity';
 @Controller('items')
 export class ItemController {
   constructor(private readonly itemService: ItemService) {}
+
+  @Get()
+  async get(): Promise<Item[]> {
+    return this.itemService.getAllItems();
+  }
 
   @Post()
   @ApiResponse({

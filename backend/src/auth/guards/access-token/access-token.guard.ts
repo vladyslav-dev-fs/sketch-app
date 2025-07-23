@@ -36,23 +36,20 @@ export class AccessTokenGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // Отримуємо authTypes з декоратора @Auth()
     const requiredAuthTypes = this.reflector.get<AuthType[]>(
       AUTH_TYPE_KEY,
       context.getHandler(),
     );
 
-    // Якщо явно вказано AuthType.None — робимо маршрут публічним (без перевірки токена)
     if (requiredAuthTypes && requiredAuthTypes.includes(AuthType.None)) {
       return true;
     }
 
-    // Інакше — перевіряємо JWT
     const request = context.switchToHttp().getRequest<RequestWithUser>();
-    const token = this.extractTokenFromHeader(request);
+    const token = this.extractTokenFromHeaderOrCookie(request);
 
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Access token not found');
     }
 
     let payload: JwtPayload;
@@ -63,16 +60,25 @@ export class AccessTokenGuard implements CanActivate {
       );
       request[REQUEST_USER_KEY] = payload;
     } catch {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid or expired access token');
     }
 
     return true;
   }
 
-  private extractTokenFromHeader(request: Request): string | undefined {
+  private extractTokenFromHeaderOrCookie(request: Request): string | undefined {
     const authHeader = request.headers.authorization;
-    if (!authHeader) return undefined;
-    const [, token] = authHeader.split(' ');
-    return token;
+    if (authHeader) {
+      const [type, token] = authHeader.split(' ');
+      if (type === 'Bearer' && token) {
+        return token;
+      }
+    }
+
+    const cookieHeader = request.headers.cookie;
+    if (!cookieHeader) return undefined;
+
+    const match = cookieHeader.match(/jwt=([^;]+)/);
+    return match ? decodeURIComponent(match[1]) : undefined;
   }
 }

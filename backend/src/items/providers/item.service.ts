@@ -39,8 +39,10 @@ export class ItemService {
       user: userFromDB,
     });
 
-    console.log('New item entity:', newItem);
-
     return this.itemRepository.save(newItem);
+  }
+
+  async getAllItems(): Promise<Item[]> {
+    return this.itemRepository.find();
   }
 }

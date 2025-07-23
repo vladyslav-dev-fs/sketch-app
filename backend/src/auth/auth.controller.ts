@@ -1,10 +1,19 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Res,
+} from '@nestjs/common';
 
 import { AuthService } from './providers/auth.service';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from './enums/auth-type.enum';
 import { RefreshTokenDto } from './dtos/refresh-token.dto';
 import { SignInDto } from 'src/auth/dtos/sign-in.dto';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -18,8 +27,31 @@ export class AuthController {
   @Post('sign-in')
   @HttpCode(HttpStatus.OK)
   @Auth(AuthType.None)
-  public signIn(@Body() signInDto: SignInDto) {
-    return this.authService.signIn(signInDto);
+  public async signIn(
+    @Body() signInDto: SignInDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken, refreshToken } =
+      await this.authService.signIn(signInDto);
+
+    res.cookie('jwt', accessToken, {
+      httpOnly: true,
+      secure: false, // Встанови true на проді (при HTTPS)
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 15 * 60 * 1000, // 15 хв
+    });
+
+    // Зберігаємо refreshToken в cookie
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 днів
+    });
+
+    return { message: 'Login successful' };
   }
 
   @Auth(AuthType.None)
@@ -27,5 +59,10 @@ export class AuthController {
   @Post('refresh-tokens')
   refreshTokens(@Body() refreshTokenDto: RefreshTokenDto) {
     return this.authService.refreshTokens(refreshTokenDto);
+  }
+
+  @Get('validate')
+  validate() {
+    return { valid: true };
   }
 }

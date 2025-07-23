@@ -8,11 +8,14 @@ import {
   ApiConflictResponse,
   ApiCreatedResponse,
 } from '@nestjs/swagger';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { AuthType } from 'src/auth/enums/auth-type.enum';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Auth(AuthType.None)
   @Post()
   @ApiCreatedResponse({
     type: User,

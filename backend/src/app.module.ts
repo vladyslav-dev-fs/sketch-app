@@ -6,6 +6,11 @@ import { UsersModule } from 'src/users/users.module';
 import { ConfigService } from 'src/config/config.service';
 import { ConfigModule } from 'src/config/config.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { ItemsModule } from 'src/items/items.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from 'src/auth/guards/access-token/access-token.guard';
+import { JwtModule } from '@nestjs/jwt';
+import jwtConfig from 'src/auth/config/jwt.config';
 
 @Module({
   imports: [
@@ -25,8 +30,10 @@ import { AuthModule } from 'src/auth/auth.module';
       }),
     }),
     UsersModule,
+    ItemsModule,
+    JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, { provide: APP_GUARD, useClass: AccessTokenGuard }],
 })
 export class AppModule {}

@@ -1,0 +1,9 @@
+POST http://localhost:3000/items
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUsImVtYWlsIjoiaWFtQGV4YW1wbGUuY29tIiwiaWF0IjoxNzUzMjYyNzMzLCJleHAiOjE3NTMyNjYzMzMsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.tf1GDZoKUOlu-96_MTkeWiGZy9zP9Yn8shX6gMBaYkg
+
+
+{
+  "item": "MacBook Air M1",
+  "itemDescription": "MacBook Air M1"
+}

@@ -1,6 +1,7 @@
 // src/users/user.entity.ts
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Item } from 'src/items/item.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity()
 export class User {
@@ -19,4 +20,10 @@ export class User {
   @ApiProperty({ example: 'Vladyslav', required: false })
   @Column({ nullable: true })
   name?: string;
+
+  @OneToMany(() => Item, (item) => item.user, {
+    cascade: true,
+    eager: true,
+  })
+  items: Item[];
 }

@@ -21,4 +21,10 @@ export class ConfigService {
       refreshSecret: this.config.get<string>('JWT_REFRESH_SECRET'),
     };
   }
+
+  get openRouter() {
+    return {
+      apiKey: this.config.get<string>('OPENROUTER_API_KEY'),
+    };
+  }
 }

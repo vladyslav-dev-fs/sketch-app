@@ -8,4 +8,5 @@ export const validationSchema = Joi.object({
   DB_NAME: Joi.string().required(),
   JWT_SECRET: Joi.string().required(),
   JWT_REFRESH_SECRET: Joi.string().required(),
+  OPENROUTER_API_KEY: Joi.string().required(),
 });

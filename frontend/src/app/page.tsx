@@ -1,3 +1,4 @@
+import OrbApp from "@/components/orb/App";
 import axios from "axios";
 import { cookies } from "next/headers";
 
@@ -24,6 +25,7 @@ export default async function HomePage() {
         ) : (
           <div>Good morning!</div>
         )}
+        <OrbApp />
       </div>
     );
   } catch (error: unknown) {

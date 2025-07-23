@@ -6,8 +6,6 @@ export default async function HomePage() {
   const cookieStore = await cookies();
   const token = cookieStore.get("jwt")?.value || "";
 
-  console.log("JWT token from cookie:", token);
-
   try {
     const response = await axios.get("http://localhost:3000/users", {
       headers: {
@@ -17,7 +15,7 @@ export default async function HomePage() {
     const user = response.data;
 
     return (
-      <div className="flex flex-col items-center justify-center text-5xl font-bold mt-28">
+      <div className="flex flex-col items-center justify-center text-5xl font-bold mt-24 px-[32px]">
         {user.name ? (
           <div>
             <h1>{"Good morning, " + user.name + "!"}</h1>
@@ -26,6 +24,14 @@ export default async function HomePage() {
           <div>Good morning!</div>
         )}
         <OrbApp />
+        <div className="flex space-x-4 mt-[40px]">
+          <button className="bg-blue-500 text-[18px] text-white px-4 py-2 border border-transparent rounded-none hover:bg-blue-600 transition">
+            Get Started
+          </button>
+          <button className="bg-transparent text-[18px] text-black  px-4 py-2 border border-black rounded-none hover:bg-white hover:text-black transition">
+            Archive
+          </button>
+        </div>
       </div>
     );
   } catch (error: unknown) {

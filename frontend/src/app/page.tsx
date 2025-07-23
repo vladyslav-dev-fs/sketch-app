@@ -1,4 +1,3 @@
-import { Item } from "@/types/item";
 import axios from "axios";
 import { cookies } from "next/headers";
 
@@ -9,23 +8,21 @@ export default async function HomePage() {
   console.log("JWT token from cookie:", token);
 
   try {
-    const response = await axios.get("http://localhost:3000/items", {
+    const response = await axios.get("http://localhost:3000/users", {
       headers: {
         Authorization: token ? `Bearer ${token}` : "",
       },
     });
-    const items = response.data;
+    const user = response.data;
 
     return (
-      <div className="h-screen flex flex-col items-center justify-center text-5xl font-bold">
-        {items.length > 0 ? (
-          items.map((item: Item, idx: number) => (
-            <div key={idx} className="text-2xl my-2">
-              {item.title + " -- " + item.id}
-            </div>
-          ))
+      <div className="flex flex-col items-center justify-center text-5xl font-bold mt-28">
+        {user.name ? (
+          <div>
+            <h1>{"Good morning, " + user.name + "!"}</h1>
+          </div>
         ) : (
-          <div>No items found</div>
+          <div>Good morning!</div>
         )}
       </div>
     );

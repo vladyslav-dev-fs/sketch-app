@@ -2,7 +2,7 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-  "email": "iam1@example.com",
+  "email": "vlad@example.com",
   "password": "Marvel2024!!",
-  "name": "Iam"
+  "name": "Vladyslav"
 }

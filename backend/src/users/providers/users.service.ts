@@ -4,6 +4,7 @@ import {
   forwardRef,
   RequestTimeoutException,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -68,5 +69,20 @@ export class UsersService {
     }
 
     return newUser;
+  }
+
+  async getActiveUser(sub: number): Promise<Omit<User, 'password'>> {
+    const user = await this.usersRepository.findOne({
+      where: { id: sub },
+      relations: ['items'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 }

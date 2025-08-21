@@ -65,4 +65,30 @@ export class AuthController {
   validate() {
     return { valid: true };
   }
+
+  // Add this method to your AuthController (backend/src/auth/auth.controller.ts)
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  public logout(@Res({ passthrough: true }) res: Response) {
+    // Clear the JWT cookie
+    res.cookie('jwt', '', {
+      httpOnly: true,
+      secure: false, // Set to true in production with HTTPS
+      sameSite: 'lax',
+      path: '/',
+      expires: new Date(0), // Set expiration to past date
+    });
+
+    // Clear the refresh token cookie
+    res.cookie('refresh_token', '', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
+      expires: new Date(0), // Set expiration to past date
+    });
+
+    return { message: 'Logout successful' };
+  }
 }

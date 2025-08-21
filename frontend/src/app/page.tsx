@@ -1,59 +1,97 @@
+"use client";
+
 import OrbApp from "@/components/orb/App";
-import axios from "axios";
-import { cookies } from "next/headers";
+import { useEffect, useState } from "react";
+import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
+import { logout, fetchWithAuth } from "@/utils/auth";
 
-export default async function HomePage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("jwt")?.value || "";
+interface User {
+  id: number;
+  email: string;
+  name?: string;
+}
 
-  try {
-    const response = await axios.get("http://localhost:3000/users", {
-      headers: {
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-    });
-    const user = response.data;
+export default function HomePage() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetchWithAuth("http://localhost:3000/users");
+
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+        } else {
+          throw new Error("Failed to fetch user data");
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error occurred");
+        console.error("Fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const handleLogout = async () => {
+    await logout();
+  };
+
+  if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center text-5xl font-bold mt-24 px-[32px]">
-        {user.name ? (
-          <div>
-            <h1>{"Good morning, " + user.name + "!"}</h1>
-          </div>
-        ) : (
-          <div>Good morning!</div>
-        )}
-        <OrbApp />
-        <div className="flex space-x-4 mt-[40px]">
-          <button className="bg-blue-500 text-[18px] text-white px-4 py-2 border border-transparent rounded-none hover:bg-blue-600 transition">
-            Get Started
-          </button>
-          <button className="bg-transparent text-[18px] text-black  px-4 py-2 border border-black rounded-none hover:bg-white hover:text-black transition">
-            Archive
-          </button>
-        </div>
+      <div className="h-screen flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      console.error(
-        "Fetch error:",
-        error.response?.status,
-        error.response?.data
-      );
-      return (
-        <div className="h-screen flex items-center justify-center text-5xl font-bold">
-          Error: {error.response?.status || "Unknown"} —{" "}
-          {error.response?.data?.message || "Failed to fetch items"}
-        </div>
-      );
-    } else {
-      console.error("Unexpected error", error);
-      return (
-        <div className="h-screen flex items-center justify-center text-5xl font-bold">
-          Unknown error occurred
-        </div>
-      );
-    }
   }
+
+  if (error) {
+    return (
+      <div className="h-screen flex items-center justify-center text-5xl font-bold">
+        Error: {error}
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <button
+        onClick={handleLogout}
+        className="absolute top-6 right-6 flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+      >
+        <ArrowRightOnRectangleIcon className="w-5 h-5" />
+        <span className="text-sm font-medium">Log out</span>
+      </button>
+      <div className="min-h-screen relative">
+        {/* Logout Button - Absolute positioned */}
+
+        {/* Main Content */}
+        <div className="flex flex-col items-center justify-center text-5xl font-bold mt-24 px-[32px]">
+          {user?.name ? (
+            <div>
+              <h1>{"Good morning, " + user.name + "!"}</h1>
+            </div>
+          ) : (
+            <div>Good morning!</div>
+          )}
+
+          <OrbApp />
+
+          <div className="flex space-x-4 mt-[40px]">
+            <button className="bg-blue-500 text-[18px] text-white px-4 py-2 border border-transparent rounded-none hover:bg-blue-600 transition">
+              Get Started
+            </button>
+            <button className="bg-transparent text-[18px] text-black px-4 py-2 border border-black rounded-none hover:bg-white hover:text-black transition">
+              Archive
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }

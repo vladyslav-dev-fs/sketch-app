@@ -15,6 +15,7 @@ export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isOrbReady, setIsOrbReady] = useState(false); // Додаємо стан для Orb
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -32,6 +33,8 @@ export default function HomePage() {
         console.error("Fetch error:", err);
       } finally {
         setLoading(false);
+        // Додаємо невеликий timeout щоб DOM встиг оновитися
+        setTimeout(() => setIsOrbReady(true), 100);
       }
     };
 
@@ -68,8 +71,6 @@ export default function HomePage() {
         <span className="text-sm font-medium">Log out</span>
       </button>
       <div className="min-h-screen relative">
-        {/* Logout Button - Absolute positioned */}
-
         {/* Main Content */}
         <div className="flex flex-col items-center justify-center text-5xl font-bold mt-24 px-[32px]">
           {user?.name ? (
@@ -80,7 +81,8 @@ export default function HomePage() {
             <div>Good morning!</div>
           )}
 
-          <OrbApp />
+          {/* Рендеримо Orb тільки коли готові */}
+          {isOrbReady && <OrbApp key="orb" />}
 
           <div className="flex space-x-4 mt-[40px]">
             <button className="bg-blue-500 text-[18px] text-white px-4 py-2 border border-transparent rounded-none hover:bg-blue-600 transition">

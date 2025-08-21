@@ -8,9 +8,12 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true); // <--
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isMounted, setIsMounted] = useState(false); // Додати цей стан
 
   useEffect(() => {
+    setIsMounted(true); // Встановити після монтування
+
     async function checkAuth() {
       try {
         const res = await fetch("http://localhost:3000/auth/validate", {
@@ -20,11 +23,11 @@ export default function LoginPage() {
         if (res.ok) {
           window.location.replace("/");
         } else {
-          setIsCheckingAuth(false); // <--
+          setIsCheckingAuth(false);
         }
       } catch (error) {
         console.log(error);
-        setIsCheckingAuth(false); // <--
+        setIsCheckingAuth(false);
       }
     }
 
@@ -48,7 +51,8 @@ export default function LoginPage() {
     }
   }
 
-  if (isCheckingAuth) {
+  // Показувати спінер до монтування або під час перевірки авторизації
+  if (!isMounted || isCheckingAuth) {
     return (
       <div className="h-screen flex items-center justify-center">
         <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />

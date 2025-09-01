@@ -45,7 +45,6 @@ export default function RegisterPage() {
     setIsLoading(true);
     setError("");
 
-    // Перевіряємо чи паролі співпадають
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       setIsLoading(false);
@@ -53,14 +52,13 @@ export default function RegisterPage() {
     }
 
     try {
-      // Створюємо користувача
       const createRes = await fetch("http://localhost:3000/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email,
           password,
-          ...(name && { name }), // додаємо name тільки якщо воно не пусте
+          ...(name && { name }),
         }),
         credentials: "include",
       });
@@ -70,7 +68,6 @@ export default function RegisterPage() {
         throw new Error(errorData.message || "Registration failed");
       }
 
-      // Після успішної реєстрації автоматично входимо
       const signInRes = await fetch("http://localhost:3000/auth/sign-in", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -81,7 +78,6 @@ export default function RegisterPage() {
       if (signInRes.ok) {
         window.location.replace("/");
       } else {
-        // Якщо автоматичний вхід не вдався, перенаправляємо на сторінку входу
         setError("Registration successful! Please log in.");
         setTimeout(() => {
           router.push("/login");
@@ -94,7 +90,6 @@ export default function RegisterPage() {
     }
   }
 
-  // Показувати спінер до монтування або під час перевірки авторизації
   if (!isMounted || isCheckingAuth) {
     return (
       <div className="h-screen flex items-center justify-center">

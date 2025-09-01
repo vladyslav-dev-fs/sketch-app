@@ -53,7 +53,6 @@ export default function LoginPage() {
     }
   }
 
-  // Показувати спінер до монтування або під час перевірки авторизації
   if (!isMounted || isCheckingAuth) {
     return (
       <div className="h-screen flex items-center justify-center">

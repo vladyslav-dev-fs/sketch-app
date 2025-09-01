@@ -86,7 +86,6 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    // Check if we need to reset daily requests
     await this.checkAndResetDailyRequests(user);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -100,12 +99,10 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    // Pro users have unlimited requests
     if (user.proPlan) {
       return true;
     }
 
-    // Check if we need to reset daily requests
     await this.checkAndResetDailyRequests(user);
 
     return user.requests > 0;
@@ -117,12 +114,10 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    // Pro users don't need to decrement requests
     if (user.proPlan) {
       return;
     }
 
-    // Check if we need to reset daily requests first
     await this.checkAndResetDailyRequests(user);
 
     if (user.requests <= 0) {
@@ -147,7 +142,6 @@ export class UsersService {
       }),
     );
 
-    // Check if it's a new day in Kyiv timezone
     const isNewDay = kyivTime.toDateString() !== lastResetKyiv.toDateString();
 
     if (isNewDay && !user.proPlan) {
@@ -160,7 +154,6 @@ export class UsersService {
     }
   }
 
-  // Cron job to reset requests at midnight Kyiv time
   @Cron('0 0 * * *', {
     timeZone: 'Europe/Kiev',
   })

@@ -69,7 +69,6 @@ export default function HomePage() {
   return (
     <>
       <div className="absolute top-6 right-6 flex items-center gap-4">
-        {/* Plan Status */}
         {user && (
           <div className="flex items-center gap-3">
             {user.proPlan ? (
@@ -154,7 +153,6 @@ export default function HomePage() {
             </button>
           </div>
 
-          {/* Request limit warning */}
           {user && !user.proPlan && user.requests <= 2 && (
             <div className="mt-6 max-w-md text-center">
               <div

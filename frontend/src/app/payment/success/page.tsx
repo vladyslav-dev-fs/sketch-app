@@ -31,7 +31,6 @@ export default function PaymentSuccessPage() {
       }
     };
 
-    // Wait a bit for webhook to process
     setTimeout(fetchUser, 2000);
   }, []);
 

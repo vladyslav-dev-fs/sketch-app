@@ -14,14 +14,11 @@ export const AnimatedSphere: React.FC<AnimatedSphereProps> = ({ orbProps }) => {
   const size = useContainerSize(containerRef);
   const appRef = useRef<App | null>(null);
 
-  // Ініціалізація App
   useEffect(() => {
     if (!containerRef.current || appRef.current) return;
 
-    // Чекаємо поки контейнер буде готовий
     const container = containerRef.current;
     if (container.clientWidth === 0 || container.clientHeight === 0) {
-      // Якщо розмір ще не відомий, чекаємо
       const observer = new ResizeObserver(() => {
         if (container.clientWidth > 0 && container.clientHeight > 0) {
           observer.disconnect();
@@ -76,7 +73,6 @@ export const AnimatedSphere: React.FC<AnimatedSphereProps> = ({ orbProps }) => {
     orbProps.shadersSpeed,
   ]);
 
-  // Оновлення налаштувань сфери при зміні пропсів
   useEffect(() => {
     const current = appRef.current;
     if (!current) return;

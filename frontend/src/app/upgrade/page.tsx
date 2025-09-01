@@ -30,7 +30,6 @@ export default function UpgradePage() {
           const userData = await response.json();
           setUser(userData);
 
-          // If user already has pro plan, redirect to home
           if (userData.proPlan) {
             router.push("/");
           }
@@ -62,7 +61,7 @@ export default function UpgradePage() {
 
       if (response.ok) {
         const { url } = await response.json();
-        window.location.href = url; // Redirect to Stripe Checkout
+        window.location.href = url;
       } else {
         const errorData = await response.json();
         throw new Error(
@@ -108,7 +107,6 @@ export default function UpgradePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12">
       <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Upgrade to Pro Plan
@@ -119,7 +117,6 @@ export default function UpgradePage() {
           </p>
         </div>
 
-        {/* Current Status */}
         {user && (
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
             <h2 className="text-xl font-semibold mb-4">Current Plan Status</h2>
@@ -152,10 +149,8 @@ export default function UpgradePage() {
           </div>
         )}
 
-        {/* Comparison Table */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
           <div className="grid grid-cols-1 md:grid-cols-3">
-            {/* Feature Column */}
             <div className="bg-gray-50 p-6 border-r border-gray-200">
               <h3 className="text-lg font-semibold mb-6">Features</h3>
               <div className="space-y-4">
@@ -168,7 +163,6 @@ export default function UpgradePage() {
               </div>
             </div>
 
-            {/* Free Plan Column */}
             <div className="p-6 border-r border-gray-200">
               <h3 className="text-lg font-semibold mb-2">Free Plan</h3>
               <p className="text-sm text-gray-600 mb-6">Current Plan</p>
@@ -200,7 +194,6 @@ export default function UpgradePage() {
               </div>
             </div>
 
-            {/* Pro Plan Column */}
             <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 relative">
               <div className="absolute top-0 right-0 bg-blue-500 text-white px-3 py-1 text-sm font-medium">
                 BEST VALUE
@@ -240,7 +233,6 @@ export default function UpgradePage() {
           </div>
         </div>
 
-        {/* CTA Section */}
         <div className="text-center">
           <button
             onClick={handleUpgrade}

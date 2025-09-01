@@ -81,7 +81,6 @@ export default function ChatPage() {
 
     if (!item.trim() || !itemDescription.trim() || isGenerating) return;
 
-    // Check if user can make request
     if (user && !user.proPlan && user.requests <= 0) {
       setError(
         "Daily request limit exceeded. Upgrade to Pro for unlimited requests."
@@ -119,14 +118,12 @@ export default function ChatPage() {
 
         setResults((prev) => [...prev, newResult]);
 
-        // Update user's request count (decrement by 1 if not pro)
         if (user && !user.proPlan) {
           setUser((prev) =>
             prev ? { ...prev, requests: prev.requests - 1 } : null
           );
         }
 
-        // Clear form after successful creation
         setItem("");
         setItemDescription("");
       } else {
@@ -226,7 +223,6 @@ export default function ChatPage() {
 
   return (
     <div className="h-screen flex flex-col bg-[var(--background)]">
-      {/* Header */}
       <header className="flex justify-between items-center p-6 border-b border-gray-200">
         <div>
           <h1 className="text-2xl font-bold text-[var(--foreground)]">
@@ -240,7 +236,6 @@ export default function ChatPage() {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Plan Status */}
           {user && (
             <div className="flex items-center gap-3">
               {user.proPlan ? (
@@ -287,7 +282,6 @@ export default function ChatPage() {
         </div>
       </header>
 
-      {/* Results Section */}
       <div className="flex-1 overflow-y-auto p-6">
         {results.length === 0 ? (
           <div className="flex items-center justify-center h-full">
@@ -386,7 +380,6 @@ export default function ChatPage() {
         )}
       </div>
 
-      {/* Input Form */}
       <div className="border-t border-gray-200 p-6 bg-white">
         <form
           onSubmit={handleGenerateDescription}

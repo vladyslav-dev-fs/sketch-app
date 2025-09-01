@@ -1,8 +1,8 @@
-POST http://localhost:3000/users
+POST https://www.tempus.com/external/api/v2/chat/stream/e45a2fef-6d8a-49f8-9b9f-d036def29930
 Content-Type: application/json
 
 {
-  "email": "vlad@example.com",
-  "password": "Marvel2024!!",
-  "name": "Vladyslav"
+  "payload": {
+    "message": "hello"
+  }
 }

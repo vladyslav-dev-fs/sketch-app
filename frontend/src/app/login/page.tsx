@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -9,10 +10,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [isMounted, setIsMounted] = useState(false); // Додати цей стан
+  const [isMounted, setIsMounted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true); // Встановити після монтування
+    setIsMounted(true);
 
     async function checkAuth() {
       try {
@@ -61,34 +63,57 @@ export default function LoginPage() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-md mx-auto pt-24 px-4 flex flex-col gap-4"
-    >
-      <h1 className="text-3xl font-semibold">Login</h1>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-        className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-      />
-      <button
-        type="submit"
-        className="w-full bg-indigo-600 text-white py-3 rounded hover:bg-indigo-700 transition"
-      >
-        Log In
-      </button>
-      {error && <p className="text-red-600">{error}</p>}
-    </form>
+    <div className="max-w-md mx-auto pt-24 px-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <h1 className="text-3xl font-semibold">Login</h1>
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full p-3 pr-12 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          >
+            {showPassword ? (
+              <EyeSlashIcon className="w-5 h-5" />
+            ) : (
+              <EyeIcon className="w-5 h-5" />
+            )}
+          </button>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-indigo-600 text-white py-3 rounded hover:bg-indigo-700 transition"
+        >
+          Log In
+        </button>
+
+        {error && <p className="text-red-600">{error}</p>}
+
+        <p className="text-center text-gray-600">
+          Don&apos;t have an account?{" "}
+          <a href="/register" className="text-indigo-600 hover:underline">
+            Register
+          </a>
+        </p>
+      </form>
+    </div>
   );
 }

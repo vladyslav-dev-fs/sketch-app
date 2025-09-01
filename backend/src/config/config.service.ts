@@ -27,4 +27,21 @@ export class ConfigService {
       apiKey: this.config.get<string>('OPENROUTER_API_KEY'),
     };
   }
+
+  get stripe() {
+    return {
+      secretKey: this.config.get<string>('STRIPE_SECRET_KEY'),
+      webhookSecret: this.config.get<string>('STRIPE_WEBHOOK_SECRET'),
+      publishableKey: this.config.get<string>('STRIPE_PUBLISHABLE_KEY'),
+    };
+  }
+
+  get app() {
+    return {
+      frontendUrl: this.config.get<string>(
+        'FRONTEND_URL',
+        'http://localhost:3001',
+      ),
+    };
+  }
 }

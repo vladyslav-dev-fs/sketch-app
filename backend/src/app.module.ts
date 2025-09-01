@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from 'src/users/users.module';
@@ -7,6 +8,7 @@ import { ConfigService } from 'src/config/config.service';
 import { ConfigModule } from 'src/config/config.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { ItemsModule } from 'src/items/items.module';
+import { PaymentModule } from 'src/payment/payment.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from 'src/auth/guards/access-token/access-token.guard';
 import { JwtModule } from '@nestjs/jwt';
@@ -16,6 +18,7 @@ import jwtConfig from 'src/auth/config/jwt.config';
   imports: [
     AuthModule,
     ConfigModule,
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -31,6 +34,7 @@ import jwtConfig from 'src/auth/config/jwt.config';
     }),
     UsersModule,
     ItemsModule,
+    PaymentModule,
     JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
   controllers: [AppController],

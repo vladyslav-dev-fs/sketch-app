@@ -3,7 +3,9 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    rawBody: true, // Enable raw body for Stripe webhooks
+  });
 
   app.enableCors({
     origin: 'http://localhost:3001',
@@ -21,6 +23,8 @@ async function bootstrap() {
     )
     .setVersion('1.0.0')
     .addTag('Users', 'User-related operations')
+    .addTag('Items', 'Item-related operations')
+    .addTag('Payment', 'Payment and subscription operations')
     .setLicense('MIT', 'https://opensource.org/licenses/MIT')
     .addServer('http://localhost:3000', 'Local server')
     .build();

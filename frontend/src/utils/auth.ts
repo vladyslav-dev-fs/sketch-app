@@ -5,6 +5,12 @@ export const refreshToken = async (): Promise<boolean> => {
     const res = await fetch("http://localhost:3000/auth/refresh-tokens", {
       method: "POST",
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        refreshToken: cookieStore.get("refresh_token"),
+      }),
     });
 
     return res.ok;

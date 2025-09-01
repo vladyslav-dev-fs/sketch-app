@@ -4,6 +4,7 @@ import OrbApp from "@/components/orb/App";
 import { useEffect, useState } from "react";
 import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
 import { logout, fetchWithAuth } from "@/utils/auth";
+import Link from "next/link";
 
 interface User {
   id: number;
@@ -85,9 +86,12 @@ export default function HomePage() {
           {isOrbReady && <OrbApp key="orb" />}
 
           <div className="flex space-x-4 mt-[40px]">
-            <button className="bg-blue-500 text-[18px] text-white px-4 py-2 border border-transparent rounded-none hover:bg-blue-600 transition">
-              Get Started
-            </button>
+            <Link
+              href={"/chat"}
+              className="bg-blue-500 text-[18px] text-white px-4 py-2 border border-transparent rounded-none hover:bg-blue-600 transition"
+            >
+              New Chat
+            </Link>
             <button className="bg-transparent text-[18px] text-black px-4 py-2 border border-black rounded-none hover:bg-white hover:text-black transition">
               Archive
             </button>

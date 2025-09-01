@@ -36,26 +36,25 @@ export class AuthController {
 
     res.cookie('jwt', accessToken, {
       httpOnly: true,
-      secure: false, // Встанови true на проді (при HTTPS)
+      secure: false,
       sameSite: 'lax',
       path: '/',
-      maxAge: 15 * 60 * 1000, // 15 хв
+      maxAge: 15 * 60 * 1000,
     });
 
-    // Зберігаємо refreshToken в cookie
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
       path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 днів
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return { message: 'Login successful' };
   }
 
   @Auth(AuthType.None)
-  @HttpCode(HttpStatus.OK) // changed since the default is 201
+  @HttpCode(HttpStatus.OK)
   @Post('refresh-tokens')
   refreshTokens(@Body() refreshTokenDto: RefreshTokenDto) {
     return this.authService.refreshTokens(refreshTokenDto);
@@ -66,27 +65,23 @@ export class AuthController {
     return { valid: true };
   }
 
-  // Add this method to your AuthController (backend/src/auth/auth.controller.ts)
-
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   public logout(@Res({ passthrough: true }) res: Response) {
-    // Clear the JWT cookie
     res.cookie('jwt', '', {
       httpOnly: true,
-      secure: false, // Set to true in production with HTTPS
+      secure: false,
       sameSite: 'lax',
       path: '/',
-      expires: new Date(0), // Set expiration to past date
+      expires: new Date(0),
     });
 
-    // Clear the refresh token cookie
     res.cookie('refresh_token', '', {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
       path: '/',
-      expires: new Date(0), // Set expiration to past date
+      expires: new Date(0),
     });
 
     return { message: 'Logout successful' };

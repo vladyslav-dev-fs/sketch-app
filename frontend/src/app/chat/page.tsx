@@ -6,6 +6,7 @@ import {
   SparklesIcon,
   BookmarkIcon,
   BookmarkSlashIcon,
+  StarIcon,
 } from "@heroicons/react/24/outline";
 import { logout, fetchWithAuth } from "@/utils/auth";
 import Link from "next/link";
@@ -14,6 +15,8 @@ interface User {
   id: number;
   email: string;
   name?: string;
+  requests: number;
+  proPlan: boolean;
 }
 
 interface ItemResult {
@@ -78,7 +81,15 @@ export default function ChatPage() {
 
     if (!item.trim() || !itemDescription.trim() || isGenerating) return;
 
+    if (user && !user.proPlan && user.requests <= 0) {
+      setError(
+        "Daily request limit exceeded. Upgrade to Pro for unlimited requests."
+      );
+      return;
+    }
+
     setIsGenerating(true);
+    setError(null);
 
     try {
       const response = await fetchWithAuth("http://localhost:3000/items", {
@@ -107,12 +118,25 @@ export default function ChatPage() {
 
         setResults((prev) => [...prev, newResult]);
 
-        // Очищуємо форму після успішного створення
+        if (user && !user.proPlan) {
+          setUser((prev) =>
+            prev ? { ...prev, requests: prev.requests - 1 } : null
+          );
+        }
+
         setItem("");
         setItemDescription("");
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to generate description");
+        if (response.status === 403) {
+          setError(
+            "Daily request limit exceeded. Upgrade to Pro for unlimited requests."
+          );
+        } else {
+          throw new Error(
+            errorData.message || "Failed to generate description"
+          );
+        }
       }
     } catch (err) {
       setError(
@@ -195,9 +219,10 @@ export default function ChatPage() {
     );
   }
 
+  const canMakeRequest = user && (user.proPlan || user.requests > 0);
+
   return (
     <div className="h-screen flex flex-col bg-[var(--background)]">
-      {/* Header */}
       <header className="flex justify-between items-center p-6 border-b border-gray-200">
         <div>
           <h1 className="text-2xl font-bold text-[var(--foreground)]">
@@ -211,6 +236,36 @@ export default function ChatPage() {
         </div>
 
         <div className="flex items-center gap-4">
+          {user && (
+            <div className="flex items-center gap-3">
+              {user.proPlan ? (
+                <div className="flex items-center gap-2 px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+                  <StarIcon className="w-4 h-4" />
+                  Pro Plan
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  {user.requests > 0 ? (
+                    <div className="text-sm text-gray-600">
+                      {user.requests} request{user.requests !== 1 && "s"} left
+                      today
+                    </div>
+                  ) : (
+                    <div className="text-sm text-red-600 font-medium">
+                      Daily limit reached
+                    </div>
+                  )}
+                  <Link
+                    href="/upgrade"
+                    className="px-3 py-1 bg-blue-500 text-white rounded-full text-sm font-medium hover:bg-blue-600 transition-colors"
+                  >
+                    Upgrade
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+
           <Link
             href="/"
             className="text-sm text-gray-600 hover:text-gray-800 font-medium transition-colors"
@@ -227,7 +282,6 @@ export default function ChatPage() {
         </div>
       </header>
 
-      {/* Results Section */}
       <div className="flex-1 overflow-y-auto p-6">
         {results.length === 0 ? (
           <div className="flex items-center justify-center h-full">
@@ -326,7 +380,6 @@ export default function ChatPage() {
         )}
       </div>
 
-      {/* Input Form */}
       <div className="border-t border-gray-200 p-6 bg-white">
         <form
           onSubmit={handleGenerateDescription}
@@ -377,7 +430,12 @@ export default function ChatPage() {
           <div className="flex justify-center">
             <button
               type="submit"
-              disabled={!item.trim() || !itemDescription.trim() || isGenerating}
+              disabled={
+                !canMakeRequest ||
+                !item.trim() ||
+                !itemDescription.trim() ||
+                isGenerating
+              }
               className="flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
             >
               <SparklesIcon className="w-5 h-5" />
